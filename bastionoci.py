@@ -5,16 +5,16 @@ import subprocess
 import time
 from datetime import timedelta
 
-with open("sessionpub.key.pub", "r") as f:
+with open("sessionpub.key.pub", "r") as f:  #Public Key file to be placed on script folder
     content = f.read()
-privkeypath = 'C:\\Users\\kdhanusu\\PycharmProjects\\OCI_scripts\\sessionpriv.key'
+privkeypath = 'C:\\Users\\kdhanusu\\PycharmProjects\\OCI_scripts\\sessionpriv.key'  #Preferred Private Key Path
 
-session_suffix='kdhanusu'
+session_suffix='<your_preferredname_in_quotes_without_tags>'  # Your name in quotes
 sessionname = 'Session'+str(datetime.datetime.date(datetime.datetime.now()))+session_suffix
 ascend_nw_comprtmt='ocid1.compartment.oc1..aaaaaaaakdwqp5fmev7pwri5ynm42eg6ylzaeweqkuto372oosng7kcrmymq'
 ascend_ocvs_comprtmt = 'ocid1.compartment.oc1..aaaaaaaayb2a6pefrhikvpsyj5quht3gdtjmm4e4kyrkqwvrkmg47554ruhq'
 
-ociconfig = oci.config.from_file("config", "DEFAULT")
+ociconfig = oci.config.from_file("config", "DEFAULT")  # Fingerprint file to be created from OCI user management
 basti = oci.bastion.BastionClient(ociconfig)
 bastion = basti.list_bastions(ascend_nw_comprtmt).data[0]
 listsession = basti.list_sessions(bastion.id).data
@@ -26,8 +26,6 @@ sessiondetails = oci.bastion.models.CreateSessionDetails( \
     key_type = 'PUB', \
     key_details = oci.bastion.models.PublicKeyDetails(public_key_content=content), \
     session_ttl_in_seconds = 10700)
-
-
 
 
 
@@ -51,3 +49,4 @@ for i in listsession:
         ssh_process = subprocess.run(ssh_cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         deletesession = basti.delete_session(createsesion.id).data
         print("Bastion session is deleted")
+
